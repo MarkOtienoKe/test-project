@@ -9,7 +9,6 @@ class FoodCommodityController extends Controller
 {
     public function getFoodCommodities(Request $request)
     {
-        $productVariety = 'Horticulture';
         $query = FoodCommodity::where('produce_variety','=',$request['product_variety'])
             ->whereYear('date', '=', $request['year'])
             ->where('commodity_type','=',$request['commodity_type'])
@@ -38,18 +37,11 @@ class FoodCommodityController extends Controller
     }
     public function getCommodityType(Request $request)
     {
-        try {
-            // get Product Variety id and name.
-
             $productVarietyData = FoodCommodity::where('produce_variety', '=', $request['produce_variety'])
                 ->distinct()->get(['commodity_type']);
 
             return $productVarietyData;
-        } catch (Exception $e) {
-            \Log::error('Exception while fetching product varieties = ' . [$e]);
 
-            return null;
-        }
     }
     public  function getProductVarieties()
     {
