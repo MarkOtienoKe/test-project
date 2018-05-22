@@ -13,41 +13,49 @@
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.3/css/bootstrap-select.min.css">
     <style>
+        .loading {
+            background-color: #ffffff;
+            background-image: url("http://loadinggif.com/images/image-selection/3.gif");
+            background-size: 25px 25px;
+            background-position: right center;
+            background-repeat: no-repeat;
+        }
 
     </style>
 </head>
 <body>
-<div class="row col-md-12">
-    <div class="row col-md-12 col-mod-offset-2">
-    <form id="product_code_comparison" name="product_code_comparison" method="GET" action="/api/food/commodities">
-        <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+<div class="col-md-12">
+    <div>
+        <br>
+    </div>
+    <div class="row col-md-12" id="" style="">
+    <form id="" name="" method="GET" action="/sales/data">
 
-
-            <div class="row col-md-3">
-                <label class="col-md-offset-1">Product Variety</label>
+            <div class="col-md-3">
+                <label class="">Product Variety</label>
                 <div class="form-group">
-                    <div class="col-lg-10 form-group">
-                        <select class="form-control input-lg" name="product_variety" id="product_variety">
+                    <div class="form-group">
+                        <select class="form-control input-lg" name="product_variety" id="product_variety" required>
 
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="row col-md-3">
-                <label class="col-md-offset-1">Commodity Type</label>
+            <div class="col-md-3">
+                <label class="">Commodity Type</label>
                 <div class="form-group">
-                    <div class="col-lg-10 form-group">
+                    <div class="form-group">
                         <select class="form-control input-lg" name="commodity_type"
-                                id="commodity_type">
+                                id="commodity_type" required>
 
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="row col-md-3">
+            <div class="col-md-3">
                 <label class="">Year</label>
                 <div class="form-group">
-                    <div class="col-lg-10 form-group">
+                    <div class="form-group">
                         <select class="form-control input-lg" name="year" id="year">
                             <option value="2012">2012</option>
                             <option value="2013">2013</option>
@@ -72,8 +80,11 @@
 
     </form>
     </div>
-    <div id="chart-container">
+
+    <div id="chart-container" class="col-md-12" style="border: solid 1px green">
+        <h3 class="text-center">{{$pageData['title']}} For {{$pageData['commodity']}} in {{$pageData['year']}}</h3>
         <canvas id="mycanvas"></canvas>
+        <p class="pull-right">Months</p>
     </div>
 
 </div>
@@ -81,6 +92,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
 <script src="{{ URL::asset('js/data.js') }}"></script>
+<script>
+  $(document).ready(function(){
+    plotSalesMonthlyGraph({!! $graphData!!});
 
+  });
+</script>
 </body>
 </html>

@@ -3,27 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\FoodCommodity;
+use function compact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+
 
 class FoodCommodityController extends Controller
 {
-    public function getFoodCommodities(Request $request)
+    public function getFoodCommodities()
     {
-        $query = FoodCommodity::where('produce_variety','=',$request['product_variety'])
-            ->whereYear('date', '=', $request['year'])
-            ->where('commodity_type','=',$request['commodity_type'])
-            ->get(['values_in_kshs','date']);
+        $productVariety = Input::get('product_variety');
+        $year = Input::get('year');
+        $productCommodity = Input::get('commodity_type');
+
+        if (!isset($productVariety)) {
+            $productVariety = 'Horticulture';
+        }
+
+        if (!isset($year)) {
+            $year = '2012';
+        }
+
+        if (!isset($productCommodity)) {
+            $productCommodity = 'Cabbages';
+        }
+
+        $pageData = collect([]);
+        $pageData->put('title', 'Sales Graph');
+        $pageData->put('product_variety', $productVariety);
+        $pageData->put('commodity', $productCommodity);
+        $pageData->put('year', $year);
+
+        $query = FoodCommodity::where('produce_variety', '=', $productVariety)
+            ->whereYear('date', '=', $year)
+            ->where('commodity_type', '=', $productCommodity)
+            ->get(['values_in_kshs', 'date']);
 
         $filteredData = array();
 
         //check if queried data is empty
-        if($query->isEmpty()){
+        if ($query->isEmpty()) {
 
-            return Null;
+            return view('index')->with([
+                'pageData' => $pageData,
+                'graphData' => json_encode($filteredData, true),
+            ]);
         }
-        foreach($query as $data){
+
+        foreach ($query as $data) {
             //get month from date
-            $month =date("M", strtotime($data['date']));
+            $month = date("M", strtotime($data['date']));
             $data['date'] = $month;
 
             //remove currency from value
@@ -32,18 +61,24 @@ class FoodCommodityController extends Controller
             $filteredData[] = $data;
 
         }
-        return $filteredData;
+
+        return view('index')->with([
+            'pageData' => $pageData,
+            'graphData' => json_encode($filteredData, true),
+        ]);
 
     }
+
     public function getCommodityType(Request $request)
     {
-            $productVarietyData = FoodCommodity::where('produce_variety', '=', $request['produce_variety'])
-                ->distinct()->get(['commodity_type']);
+        $productVarietyData = FoodCommodity::where('produce_variety', '=', $request['produce_variety'])
+            ->distinct()->get(['commodity_type']);
 
-            return $productVarietyData;
+        return $productVarietyData;
 
     }
-    public  function getProductVarieties()
+
+    public function getProductVarieties()
     {
         $query = FoodCommodity::select('produce_variety')->distinct()->get();
 

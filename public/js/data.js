@@ -51,62 +51,41 @@
       }
     });
   });
-  $(document).on('change', '#commodity_type', function() {
-    commodityType = $(this).val();
-    console.log(commodityType);
 
-  });
-  $(document).on('change', '#year', function() {
-    year = $(this).val();
-  });
+})();
+function plotSalesMonthlyGraph (data) {
+  var value = [];
+  var month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  console.log(product_variety);
-  console.log(year);
-  console.log(commodityType);
-
-  $.ajax({
-    url: "/api/food/commodities",
-    method: "GET",
-    data: {
-      'product_variety': product_variety,
-      'year': year,
-      'commodity_type': commodityType,
-    },
-    success: function(data) {
-      var value = [];
-      var month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-      for(var i in data) {
-        value.push(data[i].values_in_kshs);
+  for(var i in data) {
+    value.push(data[i].values_in_kshs);
+  }
+  var chartdata = {
+    labels: month,
+    datasets : [
+      {
+        label: 'Value',
+        backgroundColor: 'lightblue',
+        borderColor: 'rgba(200, 200, 200, 0.75)',
+        hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+        hoverBorderColor: 'rgba(200, 200, 200, 1)',
+        data: value
       }
-      var chartdata = {
-        labels: month,
-        datasets : [
-          {
-            label: 'Value',
-            backgroundColor: 'lightblue',
-            borderColor: 'rgba(200, 200, 200, 0.75)',
-            hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-            hoverBorderColor: 'rgba(200, 200, 200, 1)',
-            data: value
-          }
-        ]
-      };
+    ]
+  };
 
-      var ctx = $("#mycanvas");
+  var ctx = $("#mycanvas");
 
-      var barGraph = new Chart(ctx, {
-        type: 'bar',
-        data: chartdata,
-        options : {
-          scales: {
-            xAxes: [{
-              display: true,
-              label: 'YYYYYY'
-            }]
-          }
-        }
-      });
+  var barGraph = new Chart(ctx, {
+    type: 'bar',
+    data: chartdata,
+    options : {
+      scales: {
+        xAxes: [{
+          display: true,
+          label: 'YYYYYY'
+        }]
+      }
     }
   });
-})();
+}
